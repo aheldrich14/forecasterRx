@@ -1,2 +1,2 @@
 # forecasterRx
-predictive analytics platform for retail pharmacy operations
+Predictive analytics platform for retail pharmacy operations

@@ -6,18 +6,10 @@ import demand_forecasting.plot as dfp
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import plotly.express as px
 import demand_forecasting.data as data
 import demand_forecasting.predict as predict
 
-from darts import TimeSeries, concatenate
-from darts.datasets import AustralianTourismDataset
-from darts.models import LinearRegressionModel, Theta
-from darts.metrics import mae
-from darts.dataprocessing.transformers import MinTReconciliator
 from dash import Dash, dcc, html, Input, Output
-from itertools import product
-from pprint import pprint
 
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 

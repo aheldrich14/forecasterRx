@@ -1,16 +1,10 @@
 import demand_forecasting.data as data
 import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
 import pathlib
-import plotly.express as px
-import plotly.graph_objects as go
 
 from gluonts.dataset.hierarchical import HierarchicalTimeSeries
-from gluonts.mx.model.deepvar_hierarchical import DeepVARHierarchicalEstimator
-from gluonts.mx.trainer import Trainer
 from gluonts.model.predictor import Predictor
-from gluonts.dataset.util import to_pandas
 
 MODEL_FOLDER = "demand_forecasting/models"
 

@@ -1,85 +1,108 @@
 # Run this app with `python app.py` and
 # visit http://127.0.0.1:8050/ in your web browser.
 
-from dash import Dash, dcc, html, Input, Output
-import plotly.express as px
+import dash_bootstrap_components as dbc
+import demand_forecasting.plot as dfp
+import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
+import plotly.express as px
+import demand_forecasting.data as data
+import demand_forecasting.predict as predict
 
-app = Dash(__name__)
+from darts import TimeSeries, concatenate
+from darts.datasets import AustralianTourismDataset
+from darts.models import LinearRegressionModel, Theta
+from darts.metrics import mae
+from darts.dataprocessing.transformers import MinTReconciliator
+from dash import Dash, dcc, html, Input, Output
+from itertools import product
+from pprint import pprint
+
+app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 colors = {"background": "#111111", "text": "#7FDBFF"}
 
-# assume you have a "long-form" data frame
-# see https://plotly.com/python/px-arguments/ for more options
-df = pd.DataFrame(
-    {
-        "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
-        "Amount": [4, 1, 2, 2, 4, 5],
-        "City": ["SF", "SF", "SF", "Montreal", "Montreal", "Montreal"],
-    }
-)
-df2 = pd.read_csv(
-    "https://raw.githubusercontent.com/plotly/datasets/master/gapminderDataFiveYear.csv"
-)
-
-fig = px.bar(df, x="Fruit", y="Amount", color="City", barmode="group")
-
-fig.update_layout(
-    plot_bgcolor=colors["background"],
-    paper_bgcolor=colors["background"],
-    font_color=colors["text"],
-)
+df = data.load_all_data()
+predictions = predict.generate_forecast()
+reasons = ["Hol", "VFR", "Bus", "Oth"]  # reasons = med group
+regions = ["NSW", "VIC", "QLD", "SA", "WA", "TAS", "NT"]  # region = pharmacy
+city_labels = ["city", "noncity"]  # city = med
 
 app.layout = html.Div(
-    style={"backgroundColor": colors["background"]},
+    # style={"backgroundColor": colors["background"]},
     children=[
         html.H1(
-            children="Hello Dash",
+            children="ForecasterRx",
             style={
                 "textAlign": "center",
                 "color": colors["text"],
             },
         ),
         html.Div(
-            children="Dash: A web application framework for your data.",
+            children="Pharmacy Demand Forecasting",
             style={
                 "textAlign": "center",
                 "color": colors["text"],
             },
         ),
-        dcc.Graph(
-            id="example-graph-2",
-            figure=fig,
+        html.Div(
+            className="row",
+            children=[
+                html.Div(
+                    children=[
+                        html.Label(
+                            ["Pharmacy:"],
+                            style={"font-weight": "bold", "text-align": "center"},
+                        ),
+                        dcc.Dropdown(
+                            options=regions,
+                            id="pharmacy-dropdown",
+                        ),
+                    ],
+                    style=dict(width="33.33%"),
+                ),
+                html.Div(
+                    children=[
+                        html.Label(
+                            ["Medication Group"],
+                            style={"font-weight": "bold", "text-align": "center"},
+                        ),
+                        dcc.Dropdown(
+                            options=reasons,
+                            id="med-group-dropdown",
+                            placeholder="Select a Medication Group",
+                        ),
+                    ],
+                    style=dict(width="33.33%"),
+                ),
+            ],
+            style=dict(display="flex"),
         ),
-        dcc.Graph(id="graph-with-slider"),
-        dcc.Slider(
-            df2["year"].min(),
-            df2["year"].max(),
-            step=None,
-            value=df2["year"].min(),
-            marks={str(year): str(year) for year in df2["year"].unique()},
-            id="year-slider",
+        dcc.Graph(
+            id="demand-forecast",
         ),
     ],
 )
 
 
-@app.callback(Output("graph-with-slider", "figure"), Input("year-slider", "value"))
-def update_figure(selected_year):
-    filtered_df = df2[df2.year == selected_year]
-
-    fig = px.scatter(
-        filtered_df,
-        x="gdpPercap",
-        y="lifeExp",
-        size="pop",
-        color="continent",
-        hover_name="country",
-        log_x=True,
-        size_max=55,
-    )
-
-    fig.update_layout(transition_duration=500)
+@app.callback(
+    Output("demand-forecast", "figure"),
+    Input("pharmacy-dropdown", "value"),
+    Input("med-group-dropdown", "value"),
+)
+def update_figure(region, reason):
+    if region is None:
+        if reason is None:
+            series = "Total"
+        else:
+            series = reason
+    else:
+        if reason is None:
+            series = region
+        else:
+            series = f"{region} - {reason.lower()}"
+    fig = dfp.generate_forecast_plot(df, series, predictions)
 
     return fig
 

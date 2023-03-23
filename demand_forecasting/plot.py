@@ -17,11 +17,11 @@ def generate_forecast_plot(df, series, predictions):
         go.Scatter(
             x=historical["time"],
             y=historical[series],
-            line_color="rgb(0,100,80)",
+            line_color="DarkBlue",
             name=series,
             marker=dict(
-                color="LightSkyBlue",
-                size=5,
+                color="DarkBlue",
+                size=6,
             ),
             mode="lines+markers",
         )
@@ -30,11 +30,11 @@ def generate_forecast_plot(df, series, predictions):
         go.Scatter(
             x=actuals["time"],
             y=actuals[series],
-            line_color="rgb(0,100,80)",
+            line_color="DarkBlue",
             name=series,
             marker=dict(
-                color="LightSkyBlue",
-                size=5,
+                color="DarkBlue",
+                size=6,
             ),
             mode="markers",
             showlegend=False,
@@ -48,6 +48,7 @@ def generate_forecast_plot(df, series, predictions):
             # fillcolor='rgba(0,100,80,0.2)',
             line_color="rgba(255,255,255,0)",
             showlegend=False,
+            name="5%",
         )
     )
     fig.add_trace(
@@ -55,7 +56,7 @@ def generate_forecast_plot(df, series, predictions):
             x=predictions["time"],
             y=predictions[95],
             fill="tonexty",
-            fillcolor="rgba(0,100,80,0.2)",
+            fillcolor="rgba(0,0,255,0.2)",
             line_color="rgba(255,255,255,0)",
             # showlegend=False,
             name="90%",
@@ -69,6 +70,7 @@ def generate_forecast_plot(df, series, predictions):
             # fillcolor='rgba(0,100,80,0.2)',
             line_color="rgba(255,255,255,0)",
             showlegend=False,
+            name="25%",
         )
     )
     fig.add_trace(
@@ -76,7 +78,7 @@ def generate_forecast_plot(df, series, predictions):
             x=predictions["time"],
             y=predictions[75],
             fill="tonexty",
-            fillcolor="rgba(0,100,80,0.6)",
+            fillcolor="rgba(0,0,255,0.6)",
             line_color="rgba(255,255,255,0)",
             # showlegend=False,
             name="50%",
@@ -87,6 +89,7 @@ def generate_forecast_plot(df, series, predictions):
             x=predictions["time"],
             y=predictions[50],
             line_color="black",
+            line_width=1,
             # showlegend=False,
             name="Forecast",
             mode="lines",

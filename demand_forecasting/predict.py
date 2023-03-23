@@ -31,7 +31,11 @@ def generate_forecast():
         forecast = next(predictor.predict(hts.to_dataset()))
         percentiles = [5, 25, 50, 75, 95]
         preds = pd.DataFrame(
-            np.percentile(forecast.samples[:, 0, :], q=percentiles, axis=0).T,
+            np.percentile(
+                forecast.samples[:, 0, :],
+                q=percentiles,
+                axis=0,
+            ).T,
             columns=percentiles,
         )
         preds["time"] = 36 - i
@@ -40,3 +44,29 @@ def generate_forecast():
         predictions.append(preds)
 
     return pd.concat(predictions)
+
+
+def get_hierarchy_str(region, reason):
+    if region is None:
+        if reason is None:
+            series = "Total"
+        else:
+            series = reason
+    else:
+        if reason is None:
+            series = region
+        else:
+            series = f"{region} - {reason.lower()}"
+    return series
+
+
+def calc_total_usage(
+    prediction_df,
+    region,
+    reason,
+    percentile,
+):
+    series = get_hierarchy_str(region, reason)
+    filtered_preds = prediction_df[prediction_df["series"] == series]
+    usage = filtered_preds[percentile].cumsum().round().astype(int)
+    return usage

@@ -24,6 +24,7 @@ def generate_forecast_plot(df, series, predictions):
                 size=6,
             ),
             mode="lines+markers",
+            hovertemplate="Actual: %{y}<br><extra></extra>",
         )
     )
     fig.add_trace(
@@ -38,6 +39,7 @@ def generate_forecast_plot(df, series, predictions):
             ),
             mode="markers",
             showlegend=False,
+            hovertemplate="Actual: %{y}<br><extra></extra>",
         )
     )
     fig.add_trace(
@@ -49,6 +51,7 @@ def generate_forecast_plot(df, series, predictions):
             line_color="rgba(255,255,255,0)",
             showlegend=False,
             name="5%",
+            hovertemplate="5%: %{y}<br><extra></extra>",
         )
     )
     fig.add_trace(
@@ -58,19 +61,18 @@ def generate_forecast_plot(df, series, predictions):
             fill="tonexty",
             fillcolor="rgba(0,0,255,0.2)",
             line_color="rgba(255,255,255,0)",
-            # showlegend=False,
             name="90%",
+            hovertemplate="95%: %{y}<br><extra></extra>",
         )
     )
     fig.add_trace(
         go.Scatter(
             x=predictions["time"],
             y=predictions[25],
-            # fill='tonexty',
-            # fillcolor='rgba(0,100,80,0.2)',
             line_color="rgba(255,255,255,0)",
             showlegend=False,
             name="25%",
+            hovertemplate="25%: %{y}<br><extra></extra>",
         )
     )
     fig.add_trace(
@@ -80,8 +82,8 @@ def generate_forecast_plot(df, series, predictions):
             fill="tonexty",
             fillcolor="rgba(0,0,255,0.6)",
             line_color="rgba(255,255,255,0)",
-            # showlegend=False,
             name="50%",
+            hovertemplate="75%: %{y}<br><extra></extra>",
         )
     )
     fig.add_trace(
@@ -90,12 +92,13 @@ def generate_forecast_plot(df, series, predictions):
             y=predictions[50],
             line_color="black",
             line_width=1,
-            # showlegend=False,
             name="Forecast",
             mode="lines",
+            hovertemplate="50%: %{y}<br><extra></extra>",
         )
     )
     fig.update_xaxes(title_text="Time")
     fig.update_yaxes(title_text="Dispenses")
+    fig.update_layout(title_text=f"Forecasted Usage for {series}")
 
     return fig

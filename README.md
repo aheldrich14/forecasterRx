@@ -15,6 +15,6 @@ Getting Started
 =================
 
 1. Clone repository.
-1. `pip install -r requirements.txt`
-1. `cd forecasterRx`
-1. `python app.py`
+1. Ensure docker and docker compose are installed.
+1. `docker compose up`
+1. Navigate to http://localhost:8050/ to view application.

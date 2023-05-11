@@ -20,3 +20,7 @@ repos:
         additional_dependencies: ['dbt-duckdb', 'sqlfluff-templater-dbt']
     -   id: sqlfluff-fix
         additional_dependencies: ['dbt-duckdb', 'sqlfluff-templater-dbt']
+-   repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: 'v0.0.265'
+    hooks:
+    -   id: ruff

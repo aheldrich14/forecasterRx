@@ -1,14 +1,13 @@
-import numpy as np
-import matplotlib.pyplot as plt
+"""Plotting functions."""
+
 import pandas as pd
-import pathlib
 import plotly.graph_objects as go
 
-import demand_forecasting.data as data
-import demand_forecasting.predict as predict
 
-
-def generate_forecast_plot(df, series, predictions):
+def generate_forecast_plot(
+    df: pd.Dataframe, series: str, predictions: pd.DataFrame
+) -> go.Figure:
+    """Create ploty figure of historical and forecasted data."""
     historical = df[:-9]
     actuals = df[-10:]
     predictions = predictions[predictions["series"] == series]
